@@ -51,7 +51,7 @@
 <br/><br/>
 
 <a href="https://fly.io/launch?repo=https://github.com/Stanytz378/IAMLEGEND">
-  <img src="https://fly.io/button.svg" height="45"/>
+  <img src="https://img.shields.io/badge/Deploy%20to-Fly.io-7B3FE4?style=for-the-badge&logo=flydotio&logoColor=white" height="45"/>
 </a>
 
 </div>
