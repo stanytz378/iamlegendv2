@@ -32,7 +32,6 @@
 </div>
 
 ---
-
 ## ⚡ One-Click Deployment
 
 <div align="center">
