@@ -34,13 +34,13 @@
     "nodejs-bot",
     "javascript-bot"
   ],
-  "homepage": "https://github.com/Stanytz378/IAMLEGEND",
+  "homepage": "https://github.com/Stanytz378/iamlegendv2",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Stanytz378/IAMLEGEND.git"
+    "url": "git+https://github.com/Stanytz378/iamlegendv2.git"
   },
   "bugs": {
-    "url": "https://github.com/Stanytz378/IAMLEGEND/issues"
+    "url": "https://github.com/Stanytz378/iamlegendv2/issues"
   },
   "license": "MIT",
   "author": "STANY TZ",
