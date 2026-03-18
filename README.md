@@ -1,9 +1,9 @@
 
 <div align="center">
 
-<!-- Premium Animated Header -->
-<img src="https://capsule-render.vercel.app/api?type=whatsapp&height=200&color=0:6a11cb,100:2575fc&text=IAMLEGEND&fontAlignY=45&fontSize=70&desc=High%20Performance%20WhatsApp%20Bot&descAlignY=70&descSize=20&animation=twinkling" width="100%"/>
+<div align="center">
 
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=180&section=header&text=LEGEND-BOT&fontSize=72&fontColor=fff&animation=twinkling&fontAlignY=32&desc=High%20Performance%20WhatsApp%20Bot&descAlignY=55&descSize=20" width="100%"/>
 <h2>🚀 Next-Gen WhatsApp Bot Framework</h2>
 
 <p>
