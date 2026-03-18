@@ -38,14 +38,14 @@
 
 | Platform | Deploy Button | Instructions |
 |----------|---------------|--------------|
-| **Heroku** | <a href="https://heroku.com/deploy?template=https://github.com/stanytz378/iamlegendv2"><img src="https://www.herokucdn.com/deploy/button.svg" height="35"/></a> | ⚠️ **Fork first!** After clicking, replace the repo in the URL with your fork: <br/> `https://heroku.com/deploy?template=https://github.com/YOUR_USERNAME/iamlegendv2` |
-| **Render** | <a href="https://render.com/deploy?repo=https://github.com/stanytz378/iamlegendv2"><img src="https://render.com/images/deploy-to-render-button.svg" height="35"/></a> | Direct deploy |
-| **Railway** | <a href="https://railway.app/new/template?template=https://github.com/stanytz378/iamlegendv2"><img src="https://railway.app/button.svg" height="35"/></a> | Direct deploy |
-| **Koyeb** | <a href="https://app.koyeb.com/deploy?type=git&repository=github.com/stanytz378/iamlegendv2"><img src="https://www.koyeb.com/static/images/deploy/button.svg" height="35"/></a> | Direct deploy |
+| **Heroku** | <a href="https://heroku.com/deploy?template=https://github.com/stanytz378/iamlegendv2"><img src="https://www.herokucdn.com/deploy/button.svg" height="55"/></a> | ⚠️ **Fork first!** After clicking, replace the repo in the URL with your fork: <br/> `https://heroku.com/deploy?template=https://github.com/YOUR_USERNAME/iamlegendv2` |
+| **Render** | <a href="https://render.com/deploy?repo=https://github.com/stanytz378/iamlegendv2"><img src="https://render.com/images/deploy-to-render-button.svg" height="55"/></a> | Direct deploy |
+| **Railway** | <a href="https://railway.app/new/template?template=https://github.com/stanytz378/iamlegendv2"><img src="https://railway.app/button.svg" height="55"/></a> | Direct deploy |
+| **Koyeb** | <a href="https://app.koyeb.com/deploy?type=git&repository=github.com/stanytz378/iamlegendv2"><img src="https://www.koyeb.com/static/images/deploy/button.svg" height="55"/></a> | Direct deploy |
 | **Fly.io** | <a href="https://fly.io/launch?repo=https://github.com/stanytz378/iamlegendv2"><img src="https://img.shields.io/badge/Deploy%20to-Fly.io-7B3FE4?style=for-the-badge&logo=flydotio&logoColor=white" height="35"/></a> | Direct deploy |
-| **VPS** | <a href="#-vps-linux-server"><img src="https://img.shields.io/badge/Deploy%20on-VPS%20(Linux)-000000?style=for-the-badge&logo=linux&logoColor=white" height="35"/></a> | Manual |
-| **Docker** | <a href="#-docker"><img src="https://img.shields.io/badge/Deploy%20with-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" height="35"/></a> | Manual |
-| **Termux** | <a href="#-termux-android"><img src="https://img.shields.io/badge/Deploy%20on-Termux-000000?style=for-the-badge&logo=android&logoColor=white" height="35"/></a> | Manual |
+| **VPS** | <a href="#-vps-linux-server"><img src="https://img.shields.io/badge/Deploy%20on-VPS%20(Linux)-000000?style=for-the-badge&logo=linux&logoColor=white" height="55"/></a> | Manual |
+| **Docker** | <a href="#-docker"><img src="https://img.shields.io/badge/Deploy%20with-Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" height="55"/></a> | Manual |
+| **Termux** | <a href="#-termux-android"><img src="https://img.shields.io/badge/Deploy%20on-Termux-000000?style=for-the-badge&logo=android&logoColor=white" height="55"/></a> | Manual |
 
 </div>
 
