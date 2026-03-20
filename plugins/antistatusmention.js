@@ -8,7 +8,8 @@
  *                                                                           *
  *    © 2026 STANY TZ. All rights reserved.                                 *
  *                                                                           *
- *    Description: Block or warn users who mention a group in their status  *
+ *    Description: Block or warn users who mention a group in status        *
+ *                 – works like antilink but for status mentions.           *
  *                                                                           *
  ***************************************************************************/
 
@@ -16,6 +17,7 @@ import store from '../lib/lightweight_store.js';
 import isOwnerOrSudo from '../lib/isOwner.js';
 
 const SETTING_KEY = 'antistatusmention';
+let listenerAttached = false;
 
 async function getConfig() {
     const config = await store.getSetting('global', SETTING_KEY);
@@ -28,58 +30,52 @@ async function saveConfig(config) {
 
 /**
  * Check if a status message mentions any group.
- * @param {object} statusMessage - The status message object
- * @returns {boolean} - true if a group is mentioned
+ * @param {object} msg - The status message object
+ * @returns {boolean}
  */
-function mentionsGroup(statusMessage) {
-    const mentionedJid = statusMessage?.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
+function mentionsGroup(msg) {
+    const mentionedJid = msg?.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
     return mentionedJid.some(jid => jid.endsWith('@g.us'));
 }
 
 /**
- * Main handler to be called from the status update event.
- * If antistatusmention is enabled and a group is mentioned, take action.
- * @param {object} sock - Baileys socket
- * @param {object} status - The status event (either a message or a reaction)
- * @returns {boolean} - true if action was taken (blocked further processing)
+ * The actual status event handler.
+ * @param {object} sock - The socket instance
+ * @param {object} update - The status update event
  */
-export async function handleStatusMention(sock, status) {
+async function statusListener(sock, update) {
     const config = await getConfig();
-    if (!config.enabled) return false;
+    if (!config.enabled) return;
 
-    // Extract the message object from the status event
+    // Extract the message object
     let msg = null;
-    if (status.messages && status.messages.length) {
-        msg = status.messages[0];
-    } else if (status.key && status.key.remoteJid === 'status@broadcast') {
-        // If it's just a key (e.g., from a reaction), we can't check mentions
-        return false;
+    if (update.messages && update.messages.length) {
+        msg = update.messages[0];
+    } else if (update.key && update.key.remoteJid === 'status@broadcast') {
+        return; // no message content to inspect
     }
-    if (!msg || !msg.message) return false;
+    if (!msg || !msg.message) return;
 
     const senderJid = msg.key.participant || msg.key.remoteJid;
-    // Skip if sender is owner or sudo (they are exempt)
-    const isSenderOwnerSudo = await isOwnerOrSudo(senderJid, sock);
-    if (isSenderOwnerSudo) return false;
+    // Skip if sender is owner or sudo
+    const isOwnerSudo = await isOwnerOrSudo(senderJid, sock);
+    if (isOwnerSudo) return;
 
-    // Check if the status mentions any group
-    if (!mentionsGroup(msg)) return false;
+    // Check for group mention
+    if (!mentionsGroup(msg)) return;
 
-    // Take action based on config
     const action = config.action;
     console.log(`[ANTISTATUSMENTION] User ${senderJid} mentioned a group in status. Action: ${action}`);
 
+    // Send a warning message (either as a reply to the status? but we can't reply to status, so we send private message)
     if (action === 'warn') {
-        // Send a warning message to the user in private chat
         await sock.sendMessage(senderJid, {
             text: `⚠️ *Warning*\n\nYou mentioned a group in your WhatsApp status. This is not allowed.\n\nIf you continue, you may be blocked.`
-        }).catch(err => console.error('Failed to send warning:', err.message));
+        }).catch(() => {});
     } else if (action === 'block') {
-        // Block the user
         try {
             await sock.updateBlockStatus(senderJid, 'block');
-            console.log(`[ANTISTATUSMENTION] Blocked user: ${senderJid}`);
-            // Optionally send a final message before blocking (though after block it won't be delivered)
+            // Try to send a final message (may not be delivered)
             await sock.sendMessage(senderJid, {
                 text: `🔒 *You have been blocked*\n\nReason: Mentioning a group in status is prohibited.`
             }).catch(() => {});
@@ -87,9 +83,19 @@ export async function handleStatusMention(sock, status) {
             console.error('Failed to block user:', err.message);
         }
     }
+}
 
-    // Return true to indicate that the status should be skipped by other handlers (like autoview)
-    return true;
+/**
+ * Attach the status listener to the socket if not already attached.
+ * @param {object} sock
+ */
+function attachListener(sock) {
+    if (listenerAttached) return;
+    sock.ev.on('status.update', async (update) => {
+        await statusListener(sock, update);
+    });
+    listenerAttached = true;
+    console.log('[ANTISTATUSMENTION] Listener attached.');
 }
 
 export default {
@@ -104,6 +110,7 @@ export default {
         const config = await getConfig();
         const action = args[0]?.toLowerCase();
 
+        // Show status if no arguments or 'status'
         if (!action || action === 'status') {
             const statusText = config.enabled ? '✅ Enabled' : '❌ Disabled';
             const actionText = config.action === 'warn' ? 'Warn' : 'Block';
@@ -122,8 +129,10 @@ export default {
             }
             config.enabled = true;
             await saveConfig(config);
+            // Attach the listener (only once)
+            attachListener(sock);
             return await sock.sendMessage(chatId, {
-                text: '✅ Anti‑status‑mention enabled. Users who mention a group in their status will be warned (or blocked depending on action).',
+                text: '✅ Anti‑status‑mention enabled. Users who mention a group in their status will be warned/blocked.',
                 ...channelInfo
             }, { quoted: message });
         }
@@ -137,6 +146,7 @@ export default {
             }
             config.enabled = false;
             await saveConfig(config);
+            // The listener remains, but its config is disabled, so it won't act.
             return await sock.sendMessage(chatId, {
                 text: '❌ Anti‑status‑mention disabled. Users may now mention groups in statuses.',
                 ...channelInfo
@@ -153,6 +163,8 @@ export default {
             }
             config.action = sub;
             await saveConfig(config);
+            // If the feature is already enabled, ensure the listener is attached
+            if (config.enabled) attachListener(sock);
             return await sock.sendMessage(chatId, {
                 text: `✅ Action set to *${sub.toUpperCase()}*. Users who mention a group in status will now be ${sub === 'warn' ? 'warned' : 'blocked'}.`,
                 ...channelInfo
