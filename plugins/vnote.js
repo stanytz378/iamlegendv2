@@ -1,14 +1,16 @@
 /*****************************************************************************
  *                                                                           *
- *                     Developed By Qasim Ali                                *
+ *                     Developed By STANY TZ                                 *
  *                                                                           *
- *  🌐  GitHub   : https://github.com/GlobalTechInfo                         *
- *  ▶️  YouTube  : https://youtube.com/@GlobalTechInfo                       *
- *  💬  WhatsApp : https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07     *
+ *  🌐  GitHub   : https://github.com/Stanytz378/iamlegendv2                 *
+ *  ▶️  YouTube  : https://youtube.com/@STANYTZ                              *
+ *  💬  WhatsApp : https://whatsapp.com/channel/0029Vb7fzu4EwEjmsD4Tzs1p     *
  *                                                                           *
- *    © 2026 GlobalTechInfo. All rights reserved.                            *
+ *    © 2026 STANY TZ. All rights reserved.                                 *
  *                                                                           *
- *****************************************************************************/
+ *    Description: Welcome message plugin for iamlegendv2 WhatsApp Bot       *
+ *                                                                           *
+ ***************************************************************************/
 import { downloadContentFromMessage } from '@whiskeysockets/baileys';
 import { exec } from 'child_process';
 import fs from 'fs';
