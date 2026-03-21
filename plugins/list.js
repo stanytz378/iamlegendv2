@@ -331,16 +331,16 @@ const menuStyles = [
     
     // 12: Clean Box
     { render: ({ greeting, quote, info, formattedCategories, prefix, timeSign, chatType, dark }) => {
-        let t = `┌─────────────>\n`;
+        let t = `┌───────────>\n`;
         t += `│IAMLEGEND│\n`;
-        t += `├─────────────>\n`;
+        t += `├───────────>\n`;
         t += `│${timeSign} ${greeting}│\n`;
         t += `│⏱ ${info.time} • ${chatType}│\n`;
         t += `│${quote}│\n`;
-        t += `├────────────>\n`;
+        t += `├──────────>\n`;
         t += `│Owner: ${info.owner}│\n`;
         t += `│Total: ${formattedCategories.total}│\n`;
-        t += `└─────────────>\n\n`;
+        t += `└───────────>\n\n`;
         for (const cat of formattedCategories) {
             t += `  ${cat.category} [${cat.count}]\n\n`;
             for (const cmd of cat.commands) {
