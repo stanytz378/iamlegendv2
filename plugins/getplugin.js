@@ -1,17 +1,17 @@
 /*****************************************************************************
  *                                                                           *
- *                     Developed By Qasim Ali                                *
+ *                     Developed By STANY TZ                                 *
  *                                                                           *
- *  🌐  GitHub   : https://github.com/GlobalTechInfo                         *
- *  ▶️  YouTube  : https://youtube.com/@GlobalTechInfo                       *
- *  💬  WhatsApp : https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07     *
+ *  🌐  GitHub   : https://github.com/Stanytz378                             *
+ *  ▶️  YouTube  : https://youtube.com/@STANYTZ                              *
+ *  💬  WhatsApp : https://whatsapp.com/channel/0029Vb7fzu4EwEjmsD4Tzs1p     *
  *                                                                           *
- *    © 2026 GlobalTechInfo. All rights reserved.                            *
+ *    © 2026 STANY TZ. All rights reserved.                                 *
  *                                                                           *
- *    Description: This file is part of the MEGA-MD Project.                 *
- *                 Unauthorized copying or distribution is prohibited.       *
+ *    Description: This file is part of the ᴵ ᴬᴹ ᴸᴱᴳᴱᴺᴰ Project.             *
+ *                 Unauthorized copying or distribution is prohibited.      *
  *                                                                           *
- *****************************************************************************/
+ ***************************************************************************/
 import fs from 'fs';
 import path from 'path';
 export default {
@@ -68,15 +68,15 @@ export default {
 };
 /*****************************************************************************
  *                                                                           *
- *                     Developed By Qasim Ali                                *
+ *                     Developed By STANY TZ                                 *
  *                                                                           *
- *  🌐  GitHub   : https://github.com/GlobalTechInfo                         *
- *  ▶️  YouTube  : https://youtube.com/@GlobalTechInfo                       *
- *  💬  WhatsApp : https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07     *
+ *  🌐  GitHub   : https://github.com/Stanytz378                             *
+ *  ▶️  YouTube  : https://youtube.com/@STANYTZ                              *
+ *  💬  WhatsApp : https://whatsapp.com/channel/0029Vb7fzu4EwEjmsD4Tzs1p     *
  *                                                                           *
- *    © 2026 GlobalTechInfo. All rights reserved.                            *
+ *    © 2026 STANY TZ. All rights reserved.                                 *
  *                                                                           *
- *    Description: This file is part of the MEGA-MD Project.                 *
- *                 Unauthorized copying or distribution is prohibited.       *
+ *    Description: This file is part of the ᴵ ᴬᴹ ᴸᴱᴳᴱᴺᴰ Project.             *
+ *                 Unauthorized copying or distribution is prohibited.      *
  *                                                                           *
- *****************************************************************************/
+ ***************************************************************************/
