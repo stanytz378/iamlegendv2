@@ -60,7 +60,7 @@ export default {
                 else {
                     await sock.sendMessage(chatId, {
                         image: { url },
-                        caption: '📥 *Downloaded by MEGA-MD*'
+                        caption: '📥 *Downloaded by legendv2*'
                     }, { quoted: message });
                 }
                 if (i < mediaList.length - 1) {
