@@ -1,18 +1,20 @@
 /*****************************************************************************
  *                                                                           *
- *                     Developed By Qasim Ali                                *
+ *                     Developed By STANY TZ                                 *
  *                                                                           *
- *  🌐  GitHub   : https://github.com/GlobalTechInfo                         *
- *  ▶️  YouTube  : https://youtube.com/@GlobalTechInfo                       *
- *  💬  WhatsApp : https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07     *
+ *  🌐  GitHub   : https://github.com/Stanytz378/iamlegendv2                 *
+ *  ▶️  YouTube  : https://youtube.com/@STANYTZ                              *
+ *  💬  WhatsApp : https://whatsapp.com/channel/0029Vb7fzu4EwEjmsD4Tzs1p     *
  *                                                                           *
- *    © 2026 GlobalTechInfo. All rights reserved.                            *
+ *    © 2026 STANY TZ. All rights reserved.                                 *
  *                                                                           *
- *    Description: This file is part of the MEGA-MD Project.                 *
- *                 Unauthorized copying or distribution is prohibited.       *
+ *    Description: Show performance metrics for all commands                *
  *                                                                           *
- *****************************************************************************/
-import CommandHandler from '../lib/commandHandler.js';
+ ***************************************************************************/
+
+import commandHandler from '../lib/commandHandler.js';
+import config from '../config.js';
+
 export default {
     command: 'perf',
     aliases: ['metrics', 'diagnostics'],
@@ -21,12 +23,16 @@ export default {
     usage: '.perf',
     ownerOnly: true,
     async handler(sock, message, args, context) {
-        const chatId = context.chatId || message.key.remoteJid;
+        const { chatId, channelInfo } = context;
         try {
-            const report = CommandHandler.getDiagnostics();
+            const report = commandHandler.getDiagnostics?.() || [];
             if (!report || report.length === 0) {
-                return await sock.sendMessage(chatId, { text: '_No performance data collected yet._' }, { quoted: message });
+                return await sock.sendMessage(chatId, {
+                    text: '_No performance data collected yet._',
+                    ...channelInfo
+                }, { quoted: message });
             }
+
             let text = `📊 *PLUGINS PERFORMANCE*\n\n`;
             report.forEach((cmd, index) => {
                 const errorText = cmd.errors > 0 ? `❗ Errors: ${cmd.errors}` : `✅ Smooth`;
@@ -35,36 +41,17 @@ export default {
                 text += `   ↳ Latency: ${cmd.average_speed}\n`;
                 text += `   ↳ Status: ${errorText}\n\n`;
             });
+
             await sock.sendMessage(chatId, {
                 text: text.trim(),
-                contextInfo: {
-                    forwardingScore: 999,
-                    isForwarded: true,
-                    forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363319098372999@newsletter',
-                        newsletterName: 'MEGA MD PERFORMANCE',
-                        serverMessageId: -1
-                    }
-                }
+                ...channelInfo
             }, { quoted: message });
-        }
-        catch (error) {
+        } catch (error) {
             console.error('Error in perf command:', error);
-            await sock.sendMessage(chatId, { text: '❌ Failed to fetch performance metrics.' }, { quoted: message });
+            await sock.sendMessage(chatId, {
+                text: '❌ Failed to fetch performance metrics.',
+                ...channelInfo
+            }, { quoted: message });
         }
     }
 };
-/*****************************************************************************
- *                                                                           *
- *                     Developed By Qasim Ali                                *
- *                                                                           *
- *  🌐  GitHub   : https://github.com/GlobalTechInfo                         *
- *  ▶️  YouTube  : https://youtube.com/@GlobalTechInfo                       *
- *  💬  WhatsApp : https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07     *
- *                                                                           *
- *    © 2026 GlobalTechInfo. All rights reserved.                            *
- *                                                                           *
- *    Description: This file is part of the MEGA-MD Project.                 *
- *                 Unauthorized copying or distribution is prohibited.       *
- *                                                                           *
- *****************************************************************************/
