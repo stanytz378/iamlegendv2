@@ -22,7 +22,7 @@ export default {
             txt += `✩  *URL* : ${json.html_url}\n`;
             txt += `✩  *Forks* : ${json.forks_count}\n`;
             txt += `✩  *Stars* : ${json.stargazers_count}\n\n`;
-            txt += `💥 *MEGA MD*`;
+            txt += `💥 *Legendv2*`;
             const imgPath = path.join(process.cwd(), 'assets/thumb.png');
             const imgBuffer = fs.readFileSync(imgPath);
             await sock.sendMessage(chatId, { image: imgBuffer, caption: txt }, { quoted: message });
