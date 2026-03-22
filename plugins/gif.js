@@ -1,44 +1,108 @@
-import axios from 'axios';
+import store from '../lib/lightweight_store.js';
+import isOwnerOrSudo from '../lib/isOwner.js';
+import isAdmin from '../lib/isAdmin.js';
+
+async function setAntiGif(chatId, enabled, action = 'delete') {
+    await store.saveSetting(chatId, 'antigif', { enabled, action });
+}
+
+async function getAntiGif(chatId) {
+    return await store.getSetting(chatId, 'antigif') || { enabled: false, action: 'delete' };
+}
+
+async function removeAntiGif(chatId) {
+    await store.saveSetting(chatId, 'antigif', { enabled: false, action: null });
+}
+
+export async function handleAntiGif(sock, chatId, message, senderId) {
+    const config = await getAntiGif(chatId);
+    if (!config.enabled) return;
+
+    const isOwnerSudo = await isOwnerOrSudo(senderId, sock, chatId);
+    if (isOwnerSudo) return;
+    try {
+        const { isSenderAdmin } = await isAdmin(sock, chatId, senderId);
+        if (isSenderAdmin) return;
+    } catch (e) {}
+
+    // Detect GIF: videoMessage with gifPlayback flag
+    const isGif = message.message?.videoMessage?.gifPlayback === true;
+    if (!isGif) return;
+
+    const action = config.action || 'delete';
+    const messageId = message.key.id;
+    const participant = message.key.participant || senderId;
+
+    if (action === 'delete' || action === 'kick') {
+        try {
+            await sock.sendMessage(chatId, {
+                delete: { remoteJid: chatId, fromMe: false, id: messageId, participant }
+            });
+        } catch (e) {}
+    }
+
+    if (action === 'warn' || action === 'delete') {
+        await sock.sendMessage(chatId, {
+            text: `⚠️ *Anti‑GIF Warning*\n\n@${senderId.split('@')[0]}, GIFs are not allowed!`,
+            mentions: [senderId]
+        });
+    }
+
+    if (action === 'kick') {
+        try {
+            await sock.groupParticipantsUpdate(chatId, [senderId], 'remove');
+            await sock.sendMessage(chatId, {
+                text: `🚫 @${senderId.split('@')[0]} removed for sending a GIF.`,
+                mentions: [senderId]
+            });
+        } catch (e) {}
+    }
+}
+
 export default {
-    command: 'gif',
-    aliases: ['giphy', 'searchgif'],
-    category: 'stickers',
-    description: 'Get a GIF based on a search term',
-    usage: '.gif <search term>',
+    command: 'antigif',
+    aliases: ['blockgif'],
+    category: 'admin',
+    description: 'Block animated GIFs',
+    usage: '.antigif <on|off|set delete|warn|kick>',
+    groupOnly: true,
+    adminOnly: true,
     async handler(sock, message, args, context) {
         const chatId = context.chatId || message.key.remoteJid;
-        const config = context.config;
-        const query = args.join(' ');
-        if (!query) {
-            await sock.sendMessage(chatId, { text: 'Please provide a search term for the GIF.' }, { quoted: message });
-            return;
+        const action = args[0]?.toLowerCase();
+
+        if (!action) {
+            const config = await getAntiGif(chatId);
+            return sock.sendMessage(chatId, {
+                text: `*🎞️ ANTI‑GIF SETUP*\n\n` +
+                    `*Status:* ${config.enabled ? '✅ Enabled' : '❌ Disabled'}\n` +
+                    `*Action:* ${config.action || 'Not set'}\n\n` +
+                    `*Commands:*\n` +
+                    `• \`.antigif on\` - Enable\n` +
+                    `• \`.antigif off\` - Disable\n` +
+                    `• \`.antigif set delete|warn|kick\``
+            }, { quoted: message });
         }
-        try {
-            const response = await axios.get('https://api.giphy.com/v1/gifs/search', {
-                params: {
-                    api_key: config.giphyApiKey,
-                    q: query,
-                    limit: 1,
-                    rating: 'g'
-                }
-            });
-            const gifData = response.data.data[0];
-            if (!gifData) {
-                await sock.sendMessage(chatId, { text: 'No GIFs found for your search term.' }, { quoted: message });
-                return;
-            }
-            const mp4Url = gifData.images.original_mp4?.mp4;
-            if (mp4Url) {
-                await sock.sendMessage(chatId, { video: { url: mp4Url }, caption: `Here is your GIF for "${query}"` }, { quoted: message });
-            }
-            else {
-                const gifUrl = gifData.images.original?.url;
-                await sock.sendMessage(chatId, { document: { url: gifUrl }, mimetype: 'image/gif', caption: `Here is your GIF for "${query}"` }, { quoted: message });
-            }
+
+        switch (action) {
+            case 'on':
+                if ((await getAntiGif(chatId)).enabled) return sock.sendMessage(chatId, { text: '⚠️ Already enabled.' });
+                await setAntiGif(chatId, true, 'delete');
+                return sock.sendMessage(chatId, { text: '✅ Anti‑GIF enabled.' });
+            case 'off':
+                await removeAntiGif(chatId);
+                return sock.sendMessage(chatId, { text: '❌ Anti‑GIF disabled.' });
+            case 'set':
+                const sub = args[1]?.toLowerCase();
+                if (!['delete', 'warn', 'kick'].includes(sub)) return sock.sendMessage(chatId, { text: '❌ Use delete, warn, or kick.' });
+                await setAntiGif(chatId, true, sub);
+                return sock.sendMessage(chatId, { text: `✅ Action set to ${sub}.` });
+            default:
+                return sock.sendMessage(chatId, { text: '❌ Invalid command.' });
         }
-        catch (error) {
-            console.error('Error in gif command:', error);
-            await sock.sendMessage(chatId, { text: '❌ Failed to fetch GIF. Please try again later.' }, { quoted: message });
-        }
-    }
+    },
+    handleAntiGif,
+    setAntiGif,
+    getAntiGif,
+    removeAntiGif
 };
