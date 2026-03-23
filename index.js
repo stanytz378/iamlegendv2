@@ -41,19 +41,8 @@ import commandHandler from './lib/commandHandler.js';
 
 store.readFromFile();
 setInterval(() => store.writeToFile(), config.storeWriteInterval || 10000);
-setInterval(() => {
-    if (global.gc) {
-        global.gc();
-        console.log('🧹 Garbage collection completed');
-    }
-}, 60000);
-setInterval(() => {
-    const used = process.memoryUsage().rss / 1024 / 1024;
-    if (used > 400) {
-        printLog('warning', 'RAM too high (>400MB), restarting bot...');
-        process.exit(1);
-    }
-}, 30000);
+// Memory monitoring removed - no forced restart due to RAM usage
+// setInterval(() => { ... }, 30000); // REMOVED
 
 const phoneNumber = config.pairingNumber || config.ownerNumber || "255618558502";
 
@@ -176,29 +165,32 @@ function hasValidSession() {
 async function initializeSession() {
     ensureSessionDirectory();
     const txt = config.sessionId;
-    if (!txt) {
-        if (hasValidSession()) {
-            printLog('success', 'Existing session found. Using saved credentials');
-            return true;
-        }
-        return false;
-    }
+    const mongoUrl = config.mongoUrl || process.env.MONGODB_URI;
 
-    if (hasValidSession()) return true;
-
-    try {
-        await SaveCreds(txt);
-        await delay(2000);
-        if (hasValidSession()) {
-            printLog('success', 'Session file verified and valid');
-            await delay(1000);
-            return true;
-        } else {
-            printLog('error', 'Session file not valid after download');
+    // If both sessionId and mongoUrl are provided, try to restore from MongoDB
+    if (txt && mongoUrl) {
+        if (hasValidSession()) return true;
+        try {
+            await SaveCreds(txt);
+            await delay(2000);
+            if (hasValidSession()) {
+                printLog('success', 'Session file verified and valid (restored from MongoDB)');
+                await delay(1000);
+                return true;
+            } else {
+                printLog('error', 'Session file not valid after download');
+                return false;
+            }
+        } catch (error) {
+            printLog('error', `Error downloading session: ${error.message}`);
             return false;
         }
-    } catch (error) {
-        printLog('error', `Error downloading session: ${error.message}`);
+    } else {
+        // MongoDB not configured, rely on file-based session
+        if (hasValidSession()) {
+            printLog('success', 'Existing file session found. Using saved credentials');
+            return true;
+        }
         return false;
     }
 }
