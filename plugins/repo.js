@@ -33,7 +33,7 @@ try {
 const REPO_OWNER = 'Stanytz378';
 const REPO_NAME = 'iamlegendv2';
 const GITHUB_API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`;
-const DEPLOY_SITE = 'https://iamlegendv2.vercel.app';
+const DEPLOY_SITE = 'https://stanytz.zone.id';
 const CHANNEL_LINK = 'https://whatsapp.com/channel/0029Vb7fzu4EwEjmsD4Tzs1p';
 const GROUP_LINK = 'https://chat.whatsapp.com/J19JASXoaK0GVSoRvShr4Y';
 
